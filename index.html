@@ -117,32 +117,32 @@
     </div>
 
     <script>
-      const tiles = document.querySelectorAll('.tile');
+      const tiles = document.querySelectorAll(".tile");
       let zoomedTileCopy = null;
 
       tiles.forEach(tile => {
-        tile.addEventListener('mouseenter', e => {
+        tile.addEventListener("mouseenter", e => {
           if (zoomedTileCopy) return;
           const rect = tile.getBoundingClientRect();
           zoomedTileCopy = tile.cloneNode(true);
           Object.assign(zoomedTileCopy.style, {
-            width: rect.width + 'px',
-            height: rect.height + 'px',
-            position: 'absolute',
-            left: rect.left + window.scrollX + 'px',
-            top: rect.top + window.scrollY + 'px',
+            width: rect.width + "px",
+            height: rect.height + "px",
+            position: "absolute",
+            left: rect.left + window.scrollX + "px",
+            top: rect.top + window.scrollY + "px",
             margin: 0,
-            pointerEvents: 'none',
-            transition: 'transform 0.3s ease',
-            transform: 'scale(1)'
+            pointerEvents: "none",
+            transition: "transform 0.3s ease",
+            transform: "scale(1)"
           });
-          zoomedTileCopy.classList.add('tile-zoomed');
+          zoomedTileCopy.classList.add("tile-zoomed");
           document.body.appendChild(zoomedTileCopy);
           void zoomedTileCopy.offsetWidth;
-          zoomedTileCopy.style.transform = 'scale(2)';
+          zoomedTileCopy.style.transform = "scale(2)";
         });
 
-        tile.addEventListener('mouseleave', () => {
+        tile.addEventListener("mouseleave", () => {
           zoomedTileCopy?.remove();
           zoomedTileCopy = null;
         });
