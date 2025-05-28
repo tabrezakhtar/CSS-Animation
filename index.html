@@ -121,32 +121,30 @@
       let zoomedTileCopy = null;
 
       tiles.forEach(tile => {
-        tile.addEventListener('mouseenter', function(e) {
+        tile.addEventListener('mouseenter', e => {
           if (zoomedTileCopy) return;
           const rect = tile.getBoundingClientRect();
           zoomedTileCopy = tile.cloneNode(true);
+          Object.assign(zoomedTileCopy.style, {
+            width: rect.width + 'px',
+            height: rect.height + 'px',
+            position: 'absolute',
+            left: rect.left + window.scrollX + 'px',
+            top: rect.top + window.scrollY + 'px',
+            margin: 0,
+            pointerEvents: 'none',
+            transition: 'transform 0.3s ease',
+            transform: 'scale(1)'
+          });
           zoomedTileCopy.classList.add('tile-zoomed');
-          zoomedTileCopy.style.width = rect.width + 'px';
-          zoomedTileCopy.style.height = rect.height + 'px';
-          zoomedTileCopy.style.position = 'absolute';
-          zoomedTileCopy.style.left = rect.left + window.scrollX + 'px';
-          zoomedTileCopy.style.top = rect.top + window.scrollY + 'px';
-          zoomedTileCopy.style.margin = '0';
-          zoomedTileCopy.style.pointerEvents = 'none';
-          zoomedTileCopy.style.transition = 'transform 0.3s ease';
-          zoomedTileCopy.style.transform = 'scale(1)';
           document.body.appendChild(zoomedTileCopy);
-          // Force reflow
           void zoomedTileCopy.offsetWidth;
-          // Animate to scale(2)
           zoomedTileCopy.style.transform = 'scale(2)';
         });
 
-        tile.addEventListener('mouseleave', function(e) {
-          if (zoomedTileCopy) {
-            zoomedTileCopy.remove();
-            zoomedTileCopy = null;
-          }
+        tile.addEventListener('mouseleave', () => {
+          zoomedTileCopy?.remove();
+          zoomedTileCopy = null;
         });
       });
     </script>
