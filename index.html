@@ -17,6 +17,7 @@
         height: 100vh;
         display: grid;
         grid-template-columns: 250px 1fr;
+        overflow-x: hidden;
       }
 
       .sidebar {
@@ -40,18 +41,20 @@
         background-color: white;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
         padding: 40px;
         text-align: center;
         cursor: pointer;
         height: 220px;
       }
 
-      .tile:hover {
-        transform: scale(1.8);
+      .tile-zoomed {
+        position: absolute !important;
+        z-index: 10;
+        transition: transform 0.3s ease;
+        transform: scale(2);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
       }
 
-      /* Medium breakpoint (tablets, 768px and up) */
       @media (max-width: 991px) {
         body {
           grid-template-columns: 180px 1fr;
@@ -61,7 +64,6 @@
         }
       }
 
-      /* Small breakpoint (phones, 600px and down) */
       @media (max-width: 600px) {
         body {
           grid-template-columns: 1fr;
@@ -80,7 +82,6 @@
         }
       }
 
-      /* Large breakpoint (desktops, 1200px and up) */
       @media (min-width: 1200px) {
         body {
           max-width: 1400px;
@@ -114,6 +115,41 @@
       <div class="tile">Tile 11</div>
       <div class="tile">Tile 12</div>
     </div>
+
+    <script>
+      const tiles = document.querySelectorAll('.tile');
+      let zoomedTileCopy = null;
+
+      tiles.forEach(tile => {
+        tile.addEventListener('mouseenter', function(e) {
+          if (zoomedTileCopy) return;
+          const rect = tile.getBoundingClientRect();
+          zoomedTileCopy = tile.cloneNode(true);
+          zoomedTileCopy.classList.add('tile-zoomed');
+          zoomedTileCopy.style.width = rect.width + 'px';
+          zoomedTileCopy.style.height = rect.height + 'px';
+          zoomedTileCopy.style.position = 'absolute';
+          zoomedTileCopy.style.left = rect.left + window.scrollX + 'px';
+          zoomedTileCopy.style.top = rect.top + window.scrollY + 'px';
+          zoomedTileCopy.style.margin = '0';
+          zoomedTileCopy.style.pointerEvents = 'none';
+          zoomedTileCopy.style.transition = 'transform 0.3s ease';
+          zoomedTileCopy.style.transform = 'scale(1)';
+          document.body.appendChild(zoomedTileCopy);
+          // Force reflow
+          void zoomedTileCopy.offsetWidth;
+          // Animate to scale(2)
+          zoomedTileCopy.style.transform = 'scale(2)';
+        });
+
+        tile.addEventListener('mouseleave', function(e) {
+          if (zoomedTileCopy) {
+            zoomedTileCopy.remove();
+            zoomedTileCopy = null;
+          }
+        });
+      });
+    </script>
 
   </body>
 </html>
